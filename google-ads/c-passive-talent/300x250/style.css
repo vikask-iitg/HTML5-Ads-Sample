@@ -1,0 +1,216 @@
+/* ==========================================================================
+   Energy Talent Search · Google Display (HTML5) banners
+   Shared stylesheet (copied into every banner folder by src/build-google.mjs).
+   9s timeline, finite animations with fill-mode "both"; seeking to 9000ms
+   shows the static end frame. Played twice in-browser (≈21s, under Google's 30s cap).
+   ========================================================================== */
+
+:root {
+  --navy: #101E39;
+  --navy-dark: #0B1628;
+  --navy-mid: #162A4A;
+  --green: #6FA83A;
+  --green-btn: #4F7F24;
+  --green-btn-hover: #3F6A1B;
+  --green-light: #A6D17A;
+  --white: #FFFFFF;
+
+  --font-head: "Space Grotesk", system-ui, sans-serif;
+  --font-body: "Plus Jakarta Sans", system-ui, sans-serif;
+  --ease: cubic-bezier(.2, .7, .2, 1);
+}
+
+@font-face { font-family: "Space Grotesk"; src: url("assets/fonts/space-grotesk.woff2") format("woff2"); font-weight: 300 700; font-display: block; }
+@font-face { font-family: "Plus Jakarta Sans"; src: url("assets/fonts/plus-jakarta-sans.woff2") format("woff2"); font-weight: 200 800; font-display: block; }
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { background: var(--navy-dark); overflow: hidden; }
+body { font-family: var(--font-body); -webkit-font-smoothing: antialiased; }
+
+.ad {
+  position: relative; display: block; overflow: hidden;
+  width: var(--w); height: var(--h);
+  color: var(--white); text-decoration: none; cursor: pointer;
+  background: linear-gradient(160deg, var(--navy) 0%, var(--navy-dark) 100%);
+}
+.ad.wait, .ad.wait * { animation-play-state: paused !important; }
+
+.bg {
+  position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
+  animation: kenburns 9s linear both;
+}
+@keyframes kenburns { from { transform: scale(1); } to { transform: scale(1.1); } }
+.scrim { position: absolute; inset: 0; pointer-events: none; }
+
+/* Layout grid — each size defines its own areas below */
+.safe { position: absolute; inset: 0; display: grid; padding: var(--pad); }
+.logo  { grid-area: logo; }
+.copy  { grid-area: copy; min-width: 0; }
+.steps { grid-area: steps; }
+.tick  { grid-area: tick; }
+.cta   { grid-area: cta; }
+
+/* ---------- Logo chip ---------- */
+.logo {
+  align-self: start; justify-self: start;
+  display: inline-flex; padding: var(--lpad, 6px 8px);
+  background: var(--white); border-radius: var(--lr, 8px);
+  box-shadow: 0 6px 16px rgba(11, 22, 40, .35);
+  animation: drop .6s var(--ease) .1s both;
+}
+.logo img { display: block; height: var(--logo); width: auto; }
+
+/* ---------- Type ---------- */
+.headline { font: 700 var(--h1)/1.08 var(--font-head); letter-spacing: -.02em; }
+.headline .t { display: block; text-wrap: balance; }
+.headline .ln { display: block; animation: rise .65s var(--ease) both; animation-delay: calc(.35s + var(--i) * .13s); }
+.mark {
+  background-image: linear-gradient(var(--green), var(--green));
+  background-repeat: no-repeat; background-position: 0 94%; background-size: 0% .12em;
+  animation: draw .7s var(--ease) both; animation-delay: var(--md, 1.3s);
+}
+.sub { display: none; margin-top: .6em; font: 500 var(--sub, 14px)/1.4 var(--font-body); color: rgba(255, 255, 255, .88); animation: rise .7s var(--ease) 1.9s both; }
+
+/* ---------- CTA ---------- */
+.cta {
+  position: relative; overflow: hidden; align-self: end; justify-self: start;
+  display: inline-flex; align-items: center; gap: .5em; white-space: nowrap;
+  padding: var(--cpad, .75em 1.1em); border-radius: var(--cr, 8px);
+  background: var(--green-btn); color: var(--white);
+  font: 700 var(--cta)/1 var(--font-body);
+  box-shadow: 0 8px 18px rgba(11, 22, 40, .45);
+  animation: pop .55s var(--ease) 2.5s both;
+}
+.cta svg { width: 1em; height: 1em; flex: none; animation: nudge 1.4s ease-in-out 3.1s 3 both; }
+.cta::after {
+  content: ""; position: absolute; top: -20%; bottom: -20%; left: 0; width: 38%;
+  background: linear-gradient(100deg, rgba(255,255,255,0) 0%, rgba(255,255,255,.38) 50%, rgba(255,255,255,0) 100%);
+  transform: translateX(-160%) skewX(-18deg);
+  animation: sweep 1.1s ease-in-out 4.1s 2 both;
+}
+.ad:hover .cta { background: var(--green-btn-hover); }
+.cta .short { display: none; }
+
+/* ---------- Steps list (concept B, roomy sizes) ---------- */
+.steps { display: none; position: relative; list-style: none; gap: var(--sgap, 8px); align-self: center; }
+.steps::before {
+  content: ""; position: absolute; left: calc(var(--spad) + var(--dot) / 2 - 1.5px);
+  top: calc(var(--sh) / 2); bottom: calc(var(--sh) / 2); width: 3px; border-radius: 2px;
+  background: var(--green); opacity: .55; transform-origin: top; transform: scaleY(0);
+  animation: grow 2.4s linear 2.1s both;
+}
+.step {
+  position: relative; z-index: 1; display: flex; align-items: center; gap: var(--sgapx, 10px);
+  height: var(--sh); padding: 0 var(--spad); border-radius: 8px;
+  background: var(--navy-mid); border: 1.5px solid rgba(255, 255, 255, .08);
+  animation: stepIn .5s var(--ease) calc(2s + var(--i) * .55s) both, stepGlow 1.1s ease-out calc(2.15s + var(--i) * .55s) both;
+}
+.step .dot { flex: none; display: grid; place-items: center; width: var(--dot); height: var(--dot); border-radius: 50%; background: var(--green); animation: pop .45s var(--ease) calc(2.15s + var(--i) * .55s) both; }
+.step .dot svg { width: 60%; height: 60%; }
+.step .dot path { stroke-dasharray: 30; stroke-dashoffset: 30; animation: tick .4s ease-out calc(2.35s + var(--i) * .55s) both; }
+.step .num { font: 600 var(--snum, 11px)/1 var(--font-head); color: var(--green-light); }
+.step .label { font: 600 var(--sfs)/1 var(--font-head); letter-spacing: -.01em; white-space: nowrap; }
+
+/* ---------- Step ticker (concept B, compact sizes) ---------- */
+.tick { display: none; align-items: center; gap: 10px; align-self: center; }
+.tick .dots { display: flex; gap: 5px; flex: none; }
+.tick .dots i {
+  width: var(--td, 10px); height: var(--td, 10px); border-radius: 50%;
+  border: 2px solid rgba(166, 209, 122, .55);
+  animation: dotOn .3s ease-out calc(2s + var(--i) * .8s) both;
+}
+.tick .labels { display: grid; font: 600 var(--tfs, 13px)/1.1 var(--font-head); white-space: nowrap; }
+.tick .labels b { grid-area: 1 / 1; font-weight: 600; animation: rise .35s var(--ease) calc(2s + var(--i) * .8s) both, out .3s ease-in calc(2.7s + var(--i) * .8s) forwards; }
+.tick .labels b em { font-style: normal; color: var(--green-light); margin-right: .35em; }
+.tick .labels b.fin { animation: rise .35s var(--ease) 6s both; }
+@keyframes dotOn { to { background: var(--green); border-color: var(--green); } }
+
+/* ---------- Keyframes ---------- */
+@keyframes rise   { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+@keyframes out    { to { opacity: 0; transform: translateY(-10px); } }
+@keyframes drop   { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: none; } }
+@keyframes draw   { to { background-size: 100% .12em; } }
+@keyframes pop    { 0% { opacity: 0; transform: scale(.88); } 70% { opacity: 1; transform: scale(1.04); } 100% { opacity: 1; transform: scale(1); } }
+@keyframes nudge  { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(3px); } }
+@keyframes sweep  { from { transform: translateX(-160%) skewX(-18deg); } to { transform: translateX(380%) skewX(-18deg); } }
+@keyframes grow   { to { transform: scaleY(1); } }
+@keyframes stepIn { from { opacity: 0; transform: translateX(-16px); } to { opacity: 1; transform: none; } }
+@keyframes stepGlow { 0% { border-color: rgba(111, 168, 58, 0); } 25% { border-color: var(--green); } 100% { border-color: rgba(111, 168, 58, .35); } }
+@keyframes tick   { to { stroke-dashoffset: 0; } }
+
+/* ---------- Scrims (navy → navy-dark only) ---------- */
+.o-v .scrim { background: linear-gradient(180deg, rgba(16,30,57,.35) 0%, rgba(16,30,57,0) 22%, rgba(16,30,57,.2) 38%, rgba(16,30,57,.9) 62%, var(--navy-dark) 100%); }
+.o-h .scrim { background: linear-gradient(90deg, var(--navy-dark) 0%, rgba(11,22,40,.94) 42%, rgba(16,30,57,.35) 72%, rgba(16,30,57,.05) 100%); }
+.c-b .bg { display: none; }
+.c-b .scrim { background: radial-gradient(120% 90% at 100% 0%, rgba(22,42,74,.9) 0%, rgba(11,22,40,0) 70%); }
+
+/* ==========================================================================
+   Sizes
+   ========================================================================== */
+
+/* 300×250 Medium Rectangle */
+.z-300x250 { --pad: 14px; --logo: 32px; --h1: 21px; --cta: 12.5px; --tfs: 13px; }
+.z-300x250 .safe { grid-template: "logo" auto "." 1fr "copy" auto "tick" auto "cta" auto / 1fr; row-gap: 10px; }
+.z-300x250.c-b .safe { grid-template: "logo" auto "." 1fr "copy" auto "tick" auto "." 1fr "cta" auto / 1fr; row-gap: 10px; }
+.z-300x250.c-b .tick { display: flex; }
+
+/* 336×280 Large Rectangle */
+.z-336x280 { --pad: 16px; --logo: 36px; --h1: 23px; --cta: 13.5px; --tfs: 14px; --td: 11px; }
+.z-336x280 .safe { grid-template: "logo" auto "." 1fr "copy" auto "tick" auto "cta" auto / 1fr; row-gap: 12px; }
+.z-336x280.c-b .safe { grid-template: "logo" auto "." 1fr "copy" auto "tick" auto "." 1fr "cta" auto / 1fr; row-gap: 12px; }
+.z-336x280.c-b .tick { display: flex; }
+
+/* 728×90 Leaderboard */
+.z-728x90 { --pad: 10px 18px 10px 10px; --logo: 56px; --h1: 19px; --cta: 14px; --tfs: 13px; --td: 9px; }
+.z-728x90 .safe { grid-template: "logo copy cta" auto "logo tick cta" auto / auto 1fr auto; column-gap: 20px; row-gap: 6px; align-content: center; }
+.z-728x90 .cta { align-self: center; }
+.z-728x90.c-b { --h1: 18px; }
+.z-728x90.c-b .tick { display: flex; }
+
+/* 970×250 Billboard */
+.z-970x250 { --pad: 24px 32px 24px 24px; --logo: 56px; --h1: 32px; --sub: 15px; --cta: 17px; }
+.z-970x250 .safe { grid-template: "logo steps cta" auto "copy steps cta" 1fr / 470px 1fr auto; column-gap: 28px; }
+.z-970x250 .copy { align-self: end; }
+.z-970x250 .sub { display: block; }
+.z-970x250 .cta { align-self: center; }
+.z-970x250.c-b { --h1: 30px; --sh: 34px; --dot: 20px; --spad: 8px; --sfs: 15px; --sgap: 6px; }
+.z-970x250.c-b .safe { grid-template-columns: 400px 1fr auto; }
+.z-970x250.c-b .steps { display: grid; max-width: 260px; }
+
+/* 160×600 Wide Skyscraper */
+.z-160x600 { --pad: 12px; --logo: 62px; --h1: 21px; --cta: 12px; --lpad: 7px 8px; }
+.z-160x600 .logo { justify-self: stretch; justify-content: center; }
+.z-160x600 .safe { grid-template: "logo" auto "." 1fr "copy" auto "steps" auto "cta" auto / 1fr; row-gap: 14px; }
+.z-160x600 .cta { justify-self: stretch; justify-content: center; --cpad: .8em .6em; }
+.z-160x600.c-b { --h1: 20px; --sh: 32px; --dot: 18px; --spad: 7px; --sfs: 12.5px; --sgap: 6px; --sgapx: 7px; }
+.z-160x600.c-b .safe { grid-template: "logo" auto "." 1fr "copy" auto "steps" auto "." 1fr "cta" auto / 1fr; }
+.z-160x600.c-b .steps { display: grid; }
+.z-160x600.c-b .step .num { display: none; }
+
+/* 300×600 Half-Page */
+.z-300x600 { --pad: 20px; --logo: 50px; --h1: 27px; --sub: 14px; --cta: 15px; }
+.z-300x600 .safe { grid-template: "logo" auto "." 1fr "copy" auto "steps" auto "cta" auto / 1fr; row-gap: 18px; }
+.z-300x600 .sub { display: block; }
+.z-300x600.c-b { --sh: 40px; --dot: 24px; --spad: 10px; --sfs: 17px; --snum: 12px; --sgap: 8px; }
+.z-300x600.c-b .safe { grid-template: "logo" auto "." 1fr "copy" auto "steps" auto "." 1fr "cta" auto / 1fr; }
+.z-300x600.c-b .steps { display: grid; }
+
+/* 320×50 Mobile Banner — logo panel + two-phase headline */
+.z-320x50 { --pad: 0 8px 0 0; --logo: 36px; --h1: 13px; --cta: 11px; --lpad: 7px 8px; --lr: 0; --cpad: .8em .85em; --cr: 6px; }
+.z-320x50 .safe { grid-template: "logo copy cta" 1fr / auto 1fr auto; column-gap: 10px; align-items: center; }
+.z-320x50 .logo { align-self: stretch; align-items: center; box-shadow: none; }
+.z-320x50 .cta { align-self: center; }
+.z-320x50 .cta .full, .z-160x600 .cta .full { display: none; }
+.z-320x50 .cta .short, .z-160x600 .cta .short { display: inline; }
+.z-320x50 .cta svg { display: none; }
+.z-320x50 .headline { position: relative; height: 2.16em; }
+.z-320x50 .headline .ln { position: absolute; inset: 0; display: flex; align-items: center; }
+.z-320x50 .headline .ln:nth-child(1) { animation: rise .5s var(--ease) .3s both, out .4s ease-in 3.8s forwards; }
+.z-320x50 .headline .ln:nth-child(2) { animation: rise .5s var(--ease) 4.2s both; }
+.z-320x50 .headline .ln:nth-child(2) .mark { --md: 4.8s; }
+
+/* 320×100 Large Mobile Banner */
+.z-320x100 { --pad: 8px 10px; --logo: 26px; --h1: 15.5px; --cta: 11px; --lpad: 5px 6px; --lr: 6px; --cpad: .75em .9em; --cr: 6px; }
+.z-320x100 .safe { grid-template: "logo cta" auto "copy copy" 1fr / 1fr auto; row-gap: 6px; }
+.z-320x100 .cta { align-self: center; }
+.z-320x100 .copy { align-self: center; }

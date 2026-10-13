@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="ad.size" content="width=970,height=250">
+  <title>Energy Talent Search · B · The 5-step process · 970x250</title>
+  <link rel="stylesheet" href="style.css">
+  <style>html,body{width:970px;height:250px}</style>
+  <script>var clickTag = "https://energytalentsearch.com/?utm_source=google&utm_medium=display&utm_campaign=ets_five_steps";</script>
+</head>
+<body>
+  <a class="ad wait c-b z-970x250 o-h" id="ad" href="javascript:window.open(window.clickTag)"
+     style="--w:970px;--h:250px" aria-label="See How We Hire — Energy Talent Search">
+    
+    <div class="scrim"></div>
+    <div class="safe">
+      <span class="logo"><img src="assets/logo.jpg" alt="Energy Talent Search"></span>
+      <div class="copy">
+        <h1 class="headline"><span class="ln" style="--i:0"><span class="t">First call to first day</span></span><span class="ln" style="--i:1"><span class="t">in <span class="mark" style="--md:1.30s">5 clear steps.</span></span></span></h1>
+      </div>
+      <ol class="steps">
+        <li class="step" style="--i:0"><span class="dot"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span><span class="num">01</span><span class="label">Discovery</span></li>
+        <li class="step" style="--i:1"><span class="dot"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span><span class="num">02</span><span class="label">Sourcing</span></li>
+        <li class="step" style="--i:2"><span class="dot"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span><span class="num">03</span><span class="label">Vetting</span></li>
+        <li class="step" style="--i:3"><span class="dot"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span><span class="num">04</span><span class="label">Shortlist</span></li>
+        <li class="step" style="--i:4"><span class="dot"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span><span class="num">05</span><span class="label">After the hire</span></li>
+      </ol>
+      <div class="tick" aria-hidden="true">
+        <span class="dots"><i style="--i:0"></i><i style="--i:1"></i><i style="--i:2"></i><i style="--i:3"></i><i style="--i:4"></i></span>
+        <span class="labels"><b style="--i:0"><em>01</em>Discovery</b><b style="--i:1"><em>02</em>Sourcing</b><b style="--i:2"><em>03</em>Vetting</b><b style="--i:3"><em>04</em>Shortlist</b><b style="--i:4"><em>05</em>After the hire</b><b class="fin">Discovery → After the hire</b></span>
+      </div>
+      <span class="cta"><span class="full">See How We Hire</span><span class="short">See How We Hire</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+    </div>
+  </a>
+  <script>
+  (function () {
+    var END = 9000;
+    var ad = document.getElementById('ad');
+    var capture = /[?&]capture\b/.test(location.search);
+    function anims() { return document.getAnimations ? document.getAnimations() : []; }
+    window.__ad = { END: END, seek: function (ms) { anims().forEach(function (a) { a.pause(); a.currentTime = ms; }); } };
+    window.__adReady = Promise.all([
+      document.fonts ? document.fonts.ready : Promise.resolve(),
+      new Promise(function (r) { if (document.readyState === 'complete') r(); else addEventListener('load', r); })
+    ]);
+    if (capture) return;
+    window.__adReady.then(function () {
+      ad.classList.remove('wait');
+      if (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) { window.__ad.seek(END); return; }
+      // 2 plays total (≈21s, within Google's 30s animation limit), then rest on the end frame.
+      setTimeout(function () { anims().forEach(function (a) { a.currentTime = 0; a.play(); }); }, END + 2500);
+    });
+  })();
+  </script>
+</body>
+</html>

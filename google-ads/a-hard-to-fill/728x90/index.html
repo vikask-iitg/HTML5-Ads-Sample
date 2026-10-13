@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="ad.size" content="width=728,height=90">
+  <title>Energy Talent Search · A · Hard-to-fill roles, filled · 728x90</title>
+  <link rel="stylesheet" href="style.css">
+  <style>html,body{width:728px;height:90px}</style>
+  <script>var clickTag = "https://energytalentsearch.com/?utm_source=google&utm_medium=display&utm_campaign=ets_hard_to_fill";</script>
+</head>
+<body>
+  <a class="ad wait c-a z-728x90 o-h" id="ad" href="javascript:window.open(window.clickTag)"
+     style="--w:728px;--h:90px" aria-label="Start a Search — Energy Talent Search">
+    <img class="bg" src="assets/photo.jpg" alt="">
+    <div class="scrim"></div>
+    <div class="safe">
+      <span class="logo"><img src="assets/logo.jpg" alt="Energy Talent Search"></span>
+      <div class="copy">
+        <h1 class="headline"><span class="ln" style="--i:0"><span class="t">Hard-to-fill energy roles?</span></span><span class="ln" style="--i:1"><span class="t">We know <span class="mark" style="--md:1.30s">who to call.</span></span></span></h1>
+        <p class="sub">Engineers, field leaders &amp; executives across Oil &amp; Gas, Renewables and Mining.</p>
+      </div>
+      <span class="cta"><span class="full">Start a Search</span><span class="short">Start a Search</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+    </div>
+  </a>
+  <script>
+  (function () {
+    var END = 9000;
+    var ad = document.getElementById('ad');
+    var capture = /[?&]capture\b/.test(location.search);
+    function anims() { return document.getAnimations ? document.getAnimations() : []; }
+    window.__ad = { END: END, seek: function (ms) { anims().forEach(function (a) { a.pause(); a.currentTime = ms; }); } };
+    window.__adReady = Promise.all([
+      document.fonts ? document.fonts.ready : Promise.resolve(),
+      new Promise(function (r) { if (document.readyState === 'complete') r(); else addEventListener('load', r); })
+    ]);
+    if (capture) return;
+    window.__adReady.then(function () {
+      ad.classList.remove('wait');
+      if (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) { window.__ad.seek(END); return; }
+      // 2 plays total (≈21s, within Google's 30s animation limit), then rest on the end frame.
+      setTimeout(function () { anims().forEach(function (a) { a.currentTime = 0; a.play(); }); }, END + 2500);
+    });
+  })();
+  </script>
+</body>
+</html>

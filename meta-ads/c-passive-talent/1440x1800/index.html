@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=1440">
+  <meta name="ad.size" content="width=1440,height=1800">
+  <title>Energy Talent Search · C · Passive talent · 1440x1800</title>
+  <link rel="preload" href="assets/fonts/space-grotesk.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="assets/fonts/plus-jakarta-sans.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="style.css">
+  <style>html,body{width:1440px;height:1800px;overflow:hidden}</style>
+  <script>var clickTag = "https://energytalentsearch.com/job-seekers/?utm_source=meta&utm_medium=paid_social&utm_campaign=ets_passive_talent";</script>
+</head>
+<body>
+  <a class="ad wait" id="ad" href="https://energytalentsearch.com/job-seekers/?utm_source=meta&utm_medium=paid_social&utm_campaign=ets_passive_talent" target="_blank" rel="noopener"
+     style="--w:1440px;--h:1800px;--lw:1080px;--lh:1350px;--k:1.333333"
+     aria-label="Start Your Job Search — Energy Talent Search">
+    <div class="stage c-c s-fe">
+      <!-- IMAGE SLOT: assets/hero-engineer.jpg (see README.md › Image slots) -->
+      <img class="bg" src="assets/hero-engineer.jpg" alt="">
+      <div class="scrim"></div>
+
+      <div class="safe">
+        <!-- LOGO SLOT: swap assets/logo.png (transparent PNG, any width, shown 84–96px tall) -->
+        <span class="logo"><img src="assets/logo.png" alt="Energy Talent Search"></span>
+        <div class="push"></div>
+        <div class="copy">
+          <p class="eyebrow">For energy professionals</p>
+          <h1 class="headline">
+          <span class="ln" style="--i:0">The best energy jobs</span>
+          <span class="ln" style="--i:1"><span class="mark" style="--md:1.35s">never hit the</span></span>
+          <span class="ln" style="--i:2"><span class="mark" style="--md:1.90s">job boards.</span></span>
+          </h1>
+          <p class="sub">Confidential. We call you first. 20+ years in energy recruiting.</p>
+        </div>
+        <span class="cta">Start Your Job Search <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+      </div>
+    </div>
+  </a>
+  <script>
+  (function () {
+    var END = 9000;
+    var ad = document.getElementById('ad');
+    var capture = /[?&]capture\b/.test(location.search);
+    var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+    function anims() { return document.getAnimations ? document.getAnimations() : []; }
+    // Deterministic seek, used by the PNG/MP4 export scripts.
+    window.__ad = {
+      END: END,
+      seek: function (ms) { anims().forEach(function (a) { a.pause(); a.currentTime = ms; }); }
+    };
+    var ready = Promise.all([
+      document.fonts ? document.fonts.ready : Promise.resolve(),
+      new Promise(function (r) { if (document.readyState === 'complete') r(); else addEventListener('load', r); })
+    ]);
+    window.__adReady = ready;
+    if (capture) return;
+    ready.then(function () {
+      if (reduce) { ad.classList.remove('wait'); window.__ad.seek(END); return; }
+      ad.classList.remove('wait');
+      // Loop 2 of 2: hold the end frame, then play once more and rest on the end frame.
+      setTimeout(function () {
+        anims().forEach(function (a) { a.currentTime = 0; a.play(); });
+      }, END + 2500);
+    });
+  })();
+  </script>
+</body>
+</html>

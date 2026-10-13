@@ -1,0 +1,280 @@
+/* ==========================================================================
+   Energy Talent Search · Meta HTML5 ads
+   Shared stylesheet (copied into every ad folder by src/build.mjs).
+   Timeline: 9s single pass, every animation is finite and uses fill-mode
+   "both", so seeking to 9000ms always shows the static end frame.
+   ========================================================================== */
+
+:root {
+  /* Brand — matched to energytalentsearch.com, do not recolor */
+  --navy: #101E39;
+  --navy-dark: #0B1628;
+  --navy-mid: #162A4A;
+  --green: #6FA83A;
+  --green-btn: #4F7F24;
+  --green-btn-hover: #3F6A1B;
+  --green-dark: #4B7922;
+  --green-light: #A6D17A;
+  --green-soft: #EEF5E6;
+  --white: #FFFFFF;
+  --mist: #F3F6FA;
+  --sand: #F7F8F5;
+  --line: #E3E8EF;
+  --body: #3F4E66;
+  --muted: #606D81;
+
+  --font-head: "Space Grotesk", system-ui, sans-serif;
+  --font-body: "Plus Jakarta Sans", system-ui, sans-serif;
+
+  --r-card: 14px;
+  --r-btn: 10px;
+  --shadow: 0 18px 40px rgba(11, 22, 40, .35);
+  --ease: cubic-bezier(.2, .7, .2, 1);
+}
+
+@font-face {
+  font-family: "Space Grotesk";
+  src: url("assets/fonts/space-grotesk.woff2") format("woff2");
+  font-weight: 300 700;
+  font-display: block;
+}
+@font-face {
+  font-family: "Plus Jakarta Sans";
+  src: url("assets/fonts/plus-jakarta-sans.woff2") format("woff2");
+  font-weight: 200 800;
+  font-display: block;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { background: var(--navy-dark); }
+body { font-family: var(--font-body); -webkit-font-smoothing: antialiased; }
+
+/* ---------- Canvas ---------------------------------------------------------
+   .ad is the exact delivery resolution. .stage is the logical layout canvas
+   (always 1080 wide); 1440x1800 scales a 1080x1350 stage by 4/3. */
+.ad {
+  position: relative; display: block; overflow: hidden;
+  width: var(--w); height: var(--h);
+  color: var(--white); text-decoration: none;
+  background: var(--navy-dark);
+}
+.stage {
+  position: absolute; left: 0; top: 0;
+  width: var(--lw); height: var(--lh);
+  transform: scale(var(--k)); transform-origin: 0 0;
+  overflow: hidden;
+}
+.ad.wait, .ad.wait * { animation-play-state: paused !important; }
+
+/* ---------- Background photo + Ken Burns ---------------------------------- */
+.bg {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%; object-fit: cover;
+  transform-origin: var(--kb-origin, 50% 50%);
+  animation: kenburns 9s linear both;
+}
+@keyframes kenburns {
+  from { transform: scale(1.04); }
+  to   { transform: scale(1.16) translate(var(--kb-x, 0px), var(--kb-y, 0px)); }
+}
+/* Navy → navy-dark scrim only (brand rule: no other gradients) */
+.scrim { position: absolute; inset: 0; pointer-events: none; }
+
+/* ---------- Safe area ------------------------------------------------------ */
+.safe {
+  position: absolute;
+  top: var(--safe-t); right: var(--safe-x); bottom: var(--safe-b); left: var(--safe-x);
+  display: flex; flex-direction: column;
+}
+.s-sq { --safe-t: 64px; --safe-b: 64px; --safe-x: 64px; }
+.s-fe { --safe-t: 64px; --safe-b: 64px; --safe-x: 64px; }   /* ×4/3 = 85px at 1440 */
+.s-st { --safe-t: 300px; --safe-b: 400px; --safe-x: 64px; } /* Meta UI: top 14% / bottom 20% */
+
+.push { flex: 1 1 auto; }
+
+/* ---------- Logo chip ------------------------------------------------------ */
+.logo {
+  align-self: flex-start;
+  display: inline-flex; padding: 12px 18px;
+  background: var(--white); border-radius: var(--r-card);
+  box-shadow: var(--shadow);
+  animation: drop .7s var(--ease) .1s both;
+}
+.logo img { display: block; height: 84px; width: auto; }
+.s-st .logo img { height: 96px; }
+
+/* ---------- Type ----------------------------------------------------------- */
+.eyebrow {
+  display: inline-flex; align-items: center; gap: 14px;
+  font: 700 24px/1 var(--font-body);
+  letter-spacing: .14em; text-transform: uppercase;
+  color: var(--green-light);
+  margin-bottom: 26px;
+  animation: rise .7s var(--ease) .25s both;
+}
+.eyebrow::before { content: ""; width: 40px; height: 4px; border-radius: 2px; background: var(--green); }
+
+.headline {
+  font: 700 var(--h1, 80px)/1.04 var(--font-head);
+  letter-spacing: -.025em;
+  color: var(--white);
+  text-wrap: balance;
+}
+.headline .ln {
+  display: block;
+  animation: rise .75s var(--ease) both;
+  animation-delay: calc(.4s + var(--i) * .13s);
+}
+/* Key-phrase underline that draws itself left → right */
+.mark {
+  background-image: linear-gradient(var(--green), var(--green));
+  background-repeat: no-repeat;
+  background-position: 0 92%;
+  background-size: 0% .12em;
+  padding-bottom: .04em;
+  animation: draw .8s var(--ease) both;
+  animation-delay: var(--md, 1.35s);
+}
+.s-sq { --h1: 78px; }
+.s-fe { --h1: 86px; }
+.s-st { --h1: 96px; }
+
+.sub {
+  margin-top: 28px; max-width: 900px;
+  font: 500 var(--sub, 32px)/1.4 var(--font-body);
+  color: rgba(255, 255, 255, .88);
+  animation: rise .8s var(--ease) 2s both;
+}
+.s-st { --sub: 36px; }
+
+/* ---------- CTA ------------------------------------------------------------ */
+.cta {
+  position: relative; overflow: hidden; align-self: flex-start;
+  display: inline-flex; align-items: center; gap: 16px;
+  margin-top: 40px; padding: 26px 40px;
+  border-radius: var(--r-btn);
+  background: var(--green-btn);
+  font: 700 var(--cta, 32px)/1 var(--font-body);
+  color: var(--white);
+  box-shadow: 0 14px 30px rgba(11, 22, 40, .45);
+  animation: pop .6s var(--ease) var(--cta-d, 2.6s) both;
+}
+.s-st { --cta: 36px; }
+.cta svg { width: 1em; height: 1em; animation: nudge 1.4s ease-in-out calc(var(--cta-d, 2.6s) + .6s) 3 both; }
+/* Light sweep, twice, then rests off-button */
+.cta::after {
+  content: ""; position: absolute; top: -20%; bottom: -20%; left: 0; width: 38%;
+  background: linear-gradient(100deg, rgba(255,255,255,0) 0%, rgba(255,255,255,.38) 50%, rgba(255,255,255,0) 100%);
+  transform: translateX(-160%) skewX(-18deg);
+  animation: sweep 1.1s ease-in-out calc(var(--cta-d, 2.6s) + 1.6s) 2 both;
+}
+.ad:hover .cta { background: var(--green-btn-hover); }
+
+/* ---------- Keyframes ------------------------------------------------------ */
+@keyframes rise  { from { opacity: 0; transform: translateY(36px); } to { opacity: 1; transform: none; } }
+@keyframes drop  { from { opacity: 0; transform: translateY(-24px); } to { opacity: 1; transform: none; } }
+@keyframes fade  { from { opacity: 0; } to { opacity: 1; } }
+@keyframes draw  { to { background-size: 100% .12em; } }
+@keyframes pop   { 0% { opacity: 0; transform: scale(.88); } 70% { opacity: 1; transform: scale(1.03); } 100% { opacity: 1; transform: scale(1); } }
+@keyframes nudge { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(8px); } }
+@keyframes sweep { from { transform: translateX(-160%) skewX(-18deg); } to { transform: translateX(380%) skewX(-18deg); } }
+
+/* ==========================================================================
+   Concept A — Hard-to-fill roles, filled (employers)
+   ========================================================================== */
+.c-a .bg { object-position: 28% 50%; --kb-origin: 30% 40%; }
+.c-a .scrim {
+  background: linear-gradient(180deg,
+    rgba(16, 30, 57, .55) 0%, rgba(16, 30, 57, 0) 26%,
+    rgba(16, 30, 57, 0) 40%, rgba(16, 30, 57, .82) 66%, var(--navy-dark) 100%);
+}
+.s-st.c-a .bg { object-position: 22% 50%; }
+.s-st.c-a .scrim {
+  background: linear-gradient(180deg,
+    rgba(16, 30, 57, .5) 0%, rgba(16, 30, 57, 0) 24%,
+    rgba(16, 30, 57, .45) 34%, rgba(16, 30, 57, .9) 50%, var(--navy-dark) 100%);
+}
+
+/* ==========================================================================
+   Concept B — The 5-step process (employers)
+   ========================================================================== */
+.c-b { background: linear-gradient(160deg, var(--navy) 0%, var(--navy-dark) 100%); }
+.c-b .bg { opacity: .16; filter: grayscale(.4); }
+.c-b .scrim { background: linear-gradient(180deg, rgba(16, 30, 57, .2) 0%, rgba(11, 22, 40, .9) 100%); }
+.c-b .headline { margin-top: 0; }
+.c-b .cta { --cta-d: 5.1s; }
+
+.steps {
+  position: relative; list-style: none;
+  display: grid; gap: var(--step-gap, 16px);
+  margin-top: var(--steps-mt, 44px);
+}
+/* connector rail that grows with the steps */
+.steps::before {
+  content: ""; position: absolute; left: calc(var(--step-pad) + var(--dot) / 2 - 2px);
+  top: calc(var(--step-h) / 2); bottom: calc(var(--step-h) / 2); width: 4px;
+  background: var(--green); border-radius: 2px; opacity: .55;
+  transform-origin: top; transform: scaleY(0);
+  animation: grow 2.4s linear 2.1s both;
+}
+@keyframes grow { to { transform: scaleY(1); } }
+
+.step {
+  position: relative; z-index: 1;
+  display: flex; align-items: center; gap: 22px;
+  height: var(--step-h); padding: 0 var(--step-pad);
+  border-radius: var(--r-card);
+  background: var(--navy-mid);
+  border: 2px solid rgba(255, 255, 255, .08);
+  box-shadow: 0 10px 24px rgba(11, 22, 40, .35);
+  animation:
+    stepIn .55s var(--ease) calc(2s + var(--i) * .55s) both,
+    stepGlow 1.1s ease-out calc(2.15s + var(--i) * .55s) both;
+}
+.step .dot {
+  flex: none; display: grid; place-items: center;
+  width: var(--dot); height: var(--dot); border-radius: 50%;
+  background: var(--green);
+  animation: pop .45s var(--ease) calc(2.15s + var(--i) * .55s) both;
+}
+.step .dot svg { width: 58%; height: 58%; }
+.step .dot path {
+  stroke-dasharray: 30; stroke-dashoffset: 30;
+  animation: tick .4s ease-out calc(2.35s + var(--i) * .55s) both;
+}
+.step .num { font: 600 var(--step-num, 24px)/1 var(--font-head); color: var(--green-light); letter-spacing: .04em; }
+.step .label { font: 600 var(--step-fs, 38px)/1 var(--font-head); color: var(--white); letter-spacing: -.01em; }
+@keyframes stepIn  { from { opacity: 0; transform: translateX(-40px); } to { opacity: 1; transform: none; } }
+@keyframes stepGlow { 0% { border-color: rgba(111, 168, 58, 0); } 25% { border-color: var(--green); } 100% { border-color: rgba(111, 168, 58, .35); } }
+@keyframes tick { to { stroke-dashoffset: 0; } }
+
+.s-sq.c-b { --step-h: 84px; --dot: 48px; --step-pad: 22px; --step-fs: 32px; --step-gap: 14px; --steps-mt: 36px; }
+.s-fe.c-b { --step-h: 92px; --dot: 54px; --step-pad: 24px; --step-fs: 36px; --step-gap: 16px; }
+.s-st.c-b { --step-h: 96px; --dot: 58px; --step-pad: 26px; --step-fs: 40px; --step-gap: 16px; --steps-mt: 48px; }
+.s-st.c-b .eyebrow { display: none; }
+
+/* Square: headline + CTA on the left, steps on the right */
+.s-sq.c-b .safe { display: grid; grid-template-columns: 1fr 400px; grid-template-rows: auto 1fr auto; column-gap: 40px; }
+.s-sq.c-b .logo { grid-column: 1; grid-row: 1; justify-self: start; }
+.s-sq.c-b .copy { grid-column: 1; grid-row: 2; align-self: center; }
+.s-sq.c-b .cta  { grid-column: 1; grid-row: 3; margin-top: 0; justify-self: start; }
+.s-sq.c-b .steps { grid-column: 2; grid-row: 1 / 4; align-self: center; margin-top: 0; }
+.s-sq.c-b { --h1: 74px; }
+
+/* ==========================================================================
+   Concept C — Passive talent (job seekers)
+   ========================================================================== */
+.c-c .bg { object-position: 78% 30%; --kb-origin: 75% 25%; }
+.c-c .scrim {
+  background: linear-gradient(180deg,
+    rgba(16, 30, 57, .5) 0%, rgba(16, 30, 57, 0) 24%,
+    rgba(16, 30, 57, 0) 36%, rgba(16, 30, 57, .84) 62%, var(--navy-dark) 100%);
+}
+.s-st.c-c .bg { object-position: 74% 50%; }
+.s-st.c-c .scrim {
+  background: linear-gradient(180deg,
+    rgba(16, 30, 57, .5) 0%, rgba(16, 30, 57, 0) 22%,
+    rgba(16, 30, 57, .4) 36%, rgba(16, 30, 57, .9) 52%, var(--navy-dark) 100%);
+}
+
+/* Reduced motion: the page script jumps straight to the end frame */

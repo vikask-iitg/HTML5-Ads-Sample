@@ -1,0 +1,336 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Energy Talent Search · Ads preview</title>
+<style>
+  :root { --navy:#101E39; --navy-dark:#0B1628; --green:#6FA83A; --green-btn:#4F7F24; --green-dark:#4B7922; --green-soft:#EEF5E6; --mist:#F3F6FA; --line:#E3E8EF; --muted:#606D81; --red:#C62828; --red-bg:#FDECEC; --red-line:#F3B9B9; }
+  /* Note: soft red panel with a strong red edge and label */
+  .platform > p.note { display: flex; gap: 12px; align-items: center; margin: 18px 0 0; padding: 12px 18px; max-width: 980px; background: var(--red-bg); border: 1px solid var(--red-line); border-left: 5px solid var(--red); border-radius: 10px; color: #8E1C1C; font-size: 15px; font-weight: 600; line-height: 1.45; box-shadow: 0 4px 12px rgba(198,40,40,.10); }
+  .note svg { flex: none; width: 22px; height: 22px; color: var(--red); }
+  .note b { flex: none; font-size: 12px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; background: var(--red); color: #fff; padding: 3px 9px; border-radius: 6px; }
+  .note kbd { font: 700 13px system-ui, sans-serif; background: #fff; color: #8E1C1C; border: 1px solid var(--red-line); border-radius: 5px; padding: 1px 7px; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--mist); color: var(--navy); font: 15px/1.5 system-ui, sans-serif; }
+  .top { position: sticky; top: 0; z-index: 2; display: flex; flex-wrap: wrap; gap: 12px 24px; align-items: center; justify-content: space-between; padding: 14px 32px; background: #fff; border-bottom: 1px solid var(--line); }
+  .top h1 { margin: 0; font-size: 18px; }
+  /* Platform toggle — segmented control, one platform visible at a time */
+  .toggle { display: inline-flex; gap: 4px; padding: 4px; background: var(--mist); border: 1px solid var(--line); border-radius: 12px; }
+  .toggle button { display: inline-flex; align-items: center; gap: 8px; background: transparent; color: var(--navy); font: 700 15px system-ui, sans-serif; padding: 10px 22px; border-radius: 9px; transition: background .15s, color .15s; }
+  .toggle button:hover { background: #fff; }
+  .toggle button[aria-selected="true"] { background: var(--navy); color: #fff; box-shadow: 0 4px 12px rgba(16,30,57,.25); }
+  .toggle button:focus-visible { outline: 3px solid var(--green); outline-offset: 2px; }
+  .toggle .count { font-size: 12px; font-weight: 700; padding: 1px 8px; border-radius: 999px; background: var(--line); color: var(--muted); }
+  .toggle button[aria-selected="true"] .count { background: rgba(255,255,255,.18); color: #fff; }
+  .platform[hidden] { display: none; }
+  button { font: 600 14px system-ui; color: #fff; background: var(--green-btn); border: 0; border-radius: 10px; padding: 10px 18px; cursor: pointer; }
+  main { padding: 8px 32px 64px; max-width: 1400px; margin: 0 auto; }
+  .platform { margin-top: 36px; padding-top: 8px; scroll-margin-top: 80px; }
+  .platform > h2 { margin: 0; font-size: 24px; display: flex; align-items: center; gap: 10px; }
+  .platform > p { margin: 4px 0 0; color: var(--muted); font-size: 14px; max-width: 900px; }
+  .badge { font-size: 12px; font-weight: 700; letter-spacing: .04em; color: #fff; background: var(--navy); padding: 4px 10px; border-radius: 6px; }
+  .row { margin-top: 24px; padding: 20px; background: #fff; border: 1px solid var(--line); border-radius: 14px; }
+  .row header { display: flex; align-items: baseline; gap: 12px; margin-bottom: 14px; }
+  .row h3 { margin: 0; font-size: 18px; }
+  .tag { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: .08em; color: var(--green-dark); background: var(--green-soft); padding: 3px 8px; border-radius: 6px; }
+  .grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; align-items: end; }
+  .flow { display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start; }
+  .flow.tall { margin-top: 28px; padding-top: 24px; border-top: 1px dashed var(--line); }
+  figure.g { min-width: 160px; }
+  figure { margin: 0; min-width: 0; }
+  figure.g { width: calc(var(--w) * 1px); max-width: 100%; }
+  .frame { position: relative; width: 100%; aspect-ratio: var(--w) / var(--h); overflow: hidden; border-radius: 10px; box-shadow: 0 8px 24px rgba(16,30,57,.16); background: var(--navy-dark); }
+  figure.g .frame { border-radius: 2px; }
+  .frame iframe { position: absolute; top: 0; left: 0; border: 0; transform-origin: 0 0; }
+  figcaption { margin-top: 8px; font-size: 13px; color: var(--muted); }
+  figcaption b { color: var(--navy); margin-right: 6px; }
+  .dl { display: inline-flex; flex-wrap: wrap; gap: 6px; margin-left: 8px; vertical-align: 1px; }
+  figure.g figcaption { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 0; }
+  figure.g .dl { flex-basis: 100%; margin: 4px 0 0; }
+  .dl-label { font-size: 12px; font-weight: 700; color: var(--red); align-self: center; margin-right: 2px; }
+  .dl a { font-size: 11px; font-weight: 700; letter-spacing: .04em; color: var(--green-dark); background: var(--green-soft); text-decoration: none; padding: 2px 7px; border-radius: 5px; }
+  .dl a:hover { background: var(--green); color: #fff; }
+  @media (max-width: 900px) { .grid { grid-template-columns: 1fr; } main, .top { padding-left: 16px; padding-right: 16px; } }
+</style>
+</head>
+<body>
+  <div class="top">
+    <h1>Energy Talent Search · Ads preview</h1>
+    <div class="toggle" role="tablist" aria-label="Ad platform">
+      <button type="button" role="tab" id="tab-meta" aria-controls="meta" aria-selected="true">Meta Ads <span class="count">9</span></button>
+      <button type="button" role="tab" id="tab-google" aria-controls="google" aria-selected="false">Google Ads <span class="count">24</span></button>
+    </div>
+    <button type="button" onclick="document.querySelectorAll('iframe').forEach(f => f.src = f.src)">Replay all</button>
+  </div>
+  <main>
+    <section class="platform" id="meta" role="tabpanel" aria-labelledby="tab-meta">
+      <h2><span class="badge">META ADS</span> Facebook &amp; Instagram</h2>
+      <p>3 concepts × 3 sizes, scaled to fit. Upload the MP4s from <code>meta-ads/export/mp4/</code> as video ads (Meta doesn't accept HTML5). Copy for Ads Manager is in <code>meta-ads/ad-copy.md</code>.</p>
+      <p class="note" role="note"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9v4M12 17h.01"/></svg><b>Note</b><span>To play an animated GIF on a Mac, select the GIF file in Finder and press the <kbd>Space</kbd> bar to use Quick Look.</span></p>
+      <section class="row">
+        <header><h3>A · Hard-to-fill roles, filled</h3><span class="tag">Employers</span></header>
+        <div class="grid">
+          <figure>
+          <div class="frame" style="--w:1080;--h:1080">
+            <iframe src="meta-ads/a-hard-to-fill/1080x1080/index.html" width="1080" height="1080" loading="lazy" title="A · Hard-to-fill roles, filled 1080x1080"></iframe>
+          </div>
+            <figcaption><b>1080x1080</b> 1:1 Square · Feed, Marketplace, Right Column<span class="dl"><span class="dl-label">Download Ads</span><a href="meta-ads/export/mp4/a-hard-to-fill_1080x1080.mp4" download>MP4</a><a href="meta-ads/export/png/a-hard-to-fill_1080x1080.png" download>PNG</a></span></figcaption>
+          </figure>
+          <figure>
+          <div class="frame" style="--w:1440;--h:1800">
+            <iframe src="meta-ads/a-hard-to-fill/1440x1800/index.html" width="1440" height="1800" loading="lazy" title="A · Hard-to-fill roles, filled 1440x1800"></iframe>
+          </div>
+            <figcaption><b>1440x1800</b> 4:5 Vertical · Facebook & Instagram Feed<span class="dl"><span class="dl-label">Download Ads</span><a href="meta-ads/export/mp4/a-hard-to-fill_1440x1800.mp4" download>MP4</a><a href="meta-ads/export/png/a-hard-to-fill_1440x1800.png" download>PNG</a></span></figcaption>
+          </figure>
+          <figure>
+          <div class="frame" style="--w:1080;--h:1920">
+            <iframe src="meta-ads/a-hard-to-fill/1080x1920/index.html" width="1080" height="1920" loading="lazy" title="A · Hard-to-fill roles, filled 1080x1920"></iframe>
+          </div>
+            <figcaption><b>1080x1920</b> 9:16 Full-screen · Stories & Reels<span class="dl"><span class="dl-label">Download Ads</span><a href="meta-ads/export/mp4/a-hard-to-fill_1080x1920.mp4" download>MP4</a><a href="meta-ads/export/png/a-hard-to-fill_1080x1920.png" download>PNG</a></span></figcaption>
+          </figure>
+        </div>
+      </section>
+      <section class="row">
+        <header><h3>B · The 5-step process</h3><span class="tag">Employers</span></header>
+        <div class="grid">
+          <figure>
+          <div class="frame" style="--w:1080;--h:1080">
+            <iframe src="meta-ads/b-five-step-process/1080x1080/index.html" width="1080" height="1080" loading="lazy" title="B · The 5-step process 1080x1080"></iframe>
+          </div>
+            <figcaption><b>1080x1080</b> 1:1 Square · Feed, Marketplace, Right Column<span class="dl"><span class="dl-label">Download Ads</span><a href="meta-ads/export/mp4/b-five-step-process_1080x1080.mp4" download>MP4</a><a href="meta-ads/export/png/b-five-step-process_1080x1080.png" download>PNG</a></span></figcaption>
+          </figure>
+          <figure>
+          <div class="frame" style="--w:1440;--h:1800">
+            <iframe src="meta-ads/b-five-step-process/1440x1800/index.html" width="1440" height="1800" loading="lazy" title="B · The 5-step process 1440x1800"></iframe>
+          </div>
+            <figcaption><b>1440x1800</b> 4:5 Vertical · Facebook & Instagram Feed<span class="dl"><span class="dl-label">Download Ads</span><a href="meta-ads/export/mp4/b-five-step-process_1440x1800.mp4" download>MP4</a><a href="meta-ads/export/png/b-five-step-process_1440x1800.png" download>PNG</a></span></figcaption>
+          </figure>
+          <figure>
+          <div class="frame" style="--w:1080;--h:1920">
+            <iframe src="meta-ads/b-five-step-process/1080x1920/index.html" width="1080" height="1920" loading="lazy" title="B · The 5-step process 1080x1920"></iframe>
+          </div>
+            <figcaption><b>1080x1920</b> 9:16 Full-screen · Stories & Reels<span class="dl"><span class="dl-label">Download Ads</span><a href="meta-ads/export/mp4/b-five-step-process_1080x1920.mp4" download>MP4</a><a href="meta-ads/export/png/b-five-step-process_1080x1920.png" download>PNG</a></span></figcaption>
+          </figure>
+        </div>
+      </section>
+      <section class="row">
+        <header><h3>C · Passive talent</h3><span class="tag">Job seekers</span></header>
+        <div class="grid">
+          <figure>
+          <div class="frame" style="--w:1080;--h:1080">
+            <iframe src="meta-ads/c-passive-talent/1080x1080/index.html" width="1080" height="1080" loading="lazy" title="C · Passive talent 1080x1080"></iframe>
+          </div>
+            <figcaption><b>1080x1080</b> 1:1 Square · Feed, Marketplace, Right Column<span class="dl"><span class="dl-label">Download Ads</span><a href="meta-ads/export/mp4/c-passive-talent_1080x1080.mp4" download>MP4</a><a href="meta-ads/export/png/c-passive-talent_1080x1080.png" download>PNG</a></span></figcaption>
+          </figure>
+          <figure>
+          <div class="frame" style="--w:1440;--h:1800">
+            <iframe src="meta-ads/c-passive-talent/1440x1800/index.html" width="1440" height="1800" loading="lazy" title="C · Passive talent 1440x1800"></iframe>
+          </div>
+            <figcaption><b>1440x1800</b> 4:5 Vertical · Facebook & Instagram Feed<span class="dl"><span class="dl-label">Download Ads</span><a href="meta-ads/export/mp4/c-passive-talent_1440x1800.mp4" download>MP4</a><a href="meta-ads/export/png/c-passive-talent_1440x1800.png" download>PNG</a></span></figcaption>
+          </figure>
+          <figure>
+          <div class="frame" style="--w:1080;--h:1920">
+            <iframe src="meta-ads/c-passive-talent/1080x1920/index.html" width="1080" height="1920" loading="lazy" title="C · Passive talent 1080x1920"></iframe>
+          </div>
+            <figcaption><b>1080x1920</b> 9:16 Full-screen · Stories & Reels<span class="dl"><span class="dl-label">Download Ads</span><a href="meta-ads/export/mp4/c-passive-talent_1080x1920.mp4" download>MP4</a><a href="meta-ads/export/png/c-passive-talent_1080x1920.png" download>PNG</a></span></figcaption>
+          </figure>
+        </div>
+      </section>
+    </section>
+    <section class="platform" id="google" role="tabpanel" aria-labelledby="tab-google" hidden>
+      <h2><span class="badge">GOOGLE ADS</span> Display Network · HTML5</h2>
+      <p>3 concepts × 8 sizes, shown at actual size. Upload the <b>ZIP</b> as an HTML5 ad (under 150 KB, clickTag-ready, 2 plays ≈ 21s). <b>GIF</b> is the animated image-ad version (under 150 KB, 4 fps, stops within 30s) for accounts without HTML5 access. <b>MP4</b> is a 30fps video of each banner. <b>PNG</b> is the static backup image.</p>
+      <p class="note" role="note"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9v4M12 17h.01"/></svg><b>Note</b><span>To play an animated GIF on a Mac, select the GIF file in Finder and press the <kbd>Space</kbd> bar to use Quick Look.</span></p>
+      <section class="row">
+        <header><h3>A · Hard-to-fill roles, filled</h3><span class="tag">Employers</span></header>
+        <div class="flow">
+          <figure class="g" style="--w:300">
+          <div class="frame" style="--w:300;--h:250">
+            <iframe src="google-ads/a-hard-to-fill/300x250/index.html" width="300" height="250" loading="lazy" title="A · Hard-to-fill roles, filled 300x250"></iframe>
+          </div>
+            <figcaption><b>300x250</b> Medium Rectangle<span class="dl"><span class="dl-label">Download Ads</span><a href="google-ads/export/zip/ets_a-hard-to-fill_300x250.zip" download>ZIP</a><a href="google-ads/export/mp4/a-hard-to-fill_300x250.mp4" download>MP4</a><a href="google-ads/export/gif/a-hard-to-fill_300x250.gif" download>GIF</a><a href="google-ads/export/png/a-hard-to-fill_300x250.png" download>PNG</a></span></figcaption>
+          </figure>
+          <figure class="g" style="--w:336">
+          <div class="frame" style="--w:336;--h:280">
+            <iframe src="google-ads/a-hard-to-fill/336x280/index.html" width="336" height="280" loading="lazy" title="A · Hard-to-fill roles, filled 336x280"></iframe>
+          </div>
+            <figcaption><b>336x280</b> Large Rectangle<span class="dl"><span class="dl-label">Download Ads</span><a href="google-ads/export/zip/ets_a-hard-to-fill_336x280.zip" download>ZIP</a><a href="google-ads/export/mp4/a-hard-to-fill_336x280.mp4" download>MP4</a><a href="google-ads/export/gif/a-hard-to-fill_336x280.gif" download>GIF</a><a href="google-ads/export/png/a-hard-to-fill_336x280.png" download>PNG</a></span></figcaption>
+          </figure>
+          <figure class="g" style="--w:728">
+          <div class="frame" style="--w:728;--h:90">
+            <iframe src="google-ads/a-hard-to-fill/728x90/index.html" width="728" height="90" loading="lazy" title="A · Hard-to-fill roles, filled 728x90"></iframe>
+          </div>
+            <figcaption><b>728x90</b> Leaderboard<span class="dl"><span class="dl-label">Download Ads</span><a href="google-ads/export/zip/ets_a-hard-to-fill_728x90.zip" download>ZIP</a><a href="google-ads/export/mp4/a-hard-to-fill_728x90.mp4" download>MP4</a><a href="google-ads/export/gif/a-hard-to-fill_728x90.gif" download>GIF</a><a href="google-ads/export/png/a-hard-to-fill_728x90.png" download>PNG</a></span></figcaption>
+          </figure>
+          <figure class="g" style="--w:970">
+          <div class="frame" style="--w:970;--h:250">
+            <iframe src="google-ads/a-hard-to-fill/970x250/index.html" width="970" height="250" loading="lazy" title="A · Hard-to-fill roles, filled 970x250"></iframe>
+          </div>
+            <figcaption><b>970x250</b> Billboard<span class="dl"><span class="dl-label">Download Ads</span><a href="google-ads/export/zip/ets_a-hard-to-fill_970x250.zip" download>ZIP</a><a href="google-ads/export/mp4/a-hard-to-fill_970x250.mp4" download>MP4</a><a href="google-ads/export/gif/a-hard-to-fill_970x250.gif" download>GIF</a><a href="google-ads/export/png/a-hard-to-fill_970x250.png" download>PNG</a></span></figcaption>
+          </figure>
+          <figure class="g" style="--w:320">
+          <div class="frame" style="--w:320;--h:50">
+            <iframe src="google-ads/a-hard-to-fill/320x50/index.html" width="320" height="50" loading="lazy" title="A · Hard-to-fill roles, filled 320x50"></iframe>
+          </div>
+            <figcaption><b>320x50</b> Mobile Banner<span class="dl"><span class="dl-label">Download Ads</span><a href="google-ads/export/zip/ets_a-hard-to-fill_320x50.zip" download>ZIP</a><a href="google-ads/export/mp4/a-hard-to-fill_320x50.mp4" download>MP4</a><a href="google-ads/export/gif/a-hard-to-fill_320x50.gif" download>GIF</a><a href="google-ads/export/png/a-hard-to-fill_320x50.png" download>PNG</a></span></figcaption>
+          </figure>
+          <figure class="g" style="--w:320">
+          <div class="frame" style="--w:320;--h:100">
+            <iframe src="google-ads/a-hard-to-fill/320x100/index.html" width="320" height="100" loading="lazy" title="A · Hard-to-fill roles, filled 320x100"></iframe>
+          </div>
+            <figcaption><b>320x100</b> Large Mobile Banner<span class="dl"><span class="dl-label">Download Ads</span><a href="google-ads/export/zip/ets_a-hard-to-fill_320x100.zip" download>ZIP</a><a href="google-ads/export/mp4/a-hard-to-fill_320x100.mp4" download>MP4</a><a href="google-ads/export/gif/a-hard-to-fill_320x100.gif" download>GIF</a><a href="google-ads/export/png/a-hard-to-fill_320x100.png" download>PNG</a></span></figcaption>
+          </figure>
+        </div>
+        <div class="flow tall">
+          <figure class="g" style="--w:300">
+          <div class="frame" style="--w:300;--h:600">
+            <iframe src="google-ads/a-hard-to-fill/300x600/index.html" width="300" height="600" loading="lazy" title="A · Hard-to-fill roles, filled 300x600"></iframe>
+          </div>
+            <figcaption><b>300x600</b> Half-Page<span class="dl"><span class="dl-label">Download Ads</span><a href="google-ads/export/zip/ets_a-hard-to-fill_300x600.zip" download>ZIP</a><a href="google-ads/export/mp4/a-hard-to-fill_300x600.mp4" download>MP4</a><a href="google-ads/export/gif/a-hard-to-fill_300x600.gif" download>GIF</a><a href="google-ads/export/png/a-hard-to-fill_300x600.png" download>PNG</a></span></figcaption>
+          </figure>
+          <figure class="g" style="--w:160">
+          <div class="frame" style="--w:160;--h:600">
+            <iframe src="google-ads/a-hard-to-fill/160x600/index.html" width="160" height="600" loading="lazy" title="A · Hard-to-fill roles, filled 160x600"></iframe>
+          </div>
+            <figcaption><b>160x600</b> Wide Skyscraper<span class="dl"><span class="dl-label">Download Ads</span><a href="google-ads/export/zip/ets_a-hard-to-fill_160x600.zip" download>ZIP</a><a href="google-ads/export/mp4/a-hard-to-fill_160x600.mp4" download>MP4</a><a href="google-ads/export/gif/a-hard-to-fill_160x600.gif" download>GIF</a><a href="google-ads/export/png/a-hard-to-fill_160x600.png" download>PNG</a></span></figcaption>
+          </figure>
+        </div>
+      </section>
+      <section class="row">
+        <header><h3>B · The 5-step process</h3><span class="tag">Employers</span></header>
+        <div class="flow">
+          <figure class="g" style="--w:300">
+          <div class="frame" style="--w:300;--h:250">
+            <iframe src="google-ads/b-five-step-process/300x250/index.html" width="300" height="250" loading="lazy" title="B · The 5-step process 300x250"></iframe>
+          </div>
+            <figcaption><b>300x250</b> Medium Rectangle<span class="dl"><span class="dl-label">Download Ads</span><a href="google-ads/export/zip/ets_b-five-step-process_300x250.zip" download>ZIP</a><a href="google-ads/export/mp4/b-five-step-process_300x250.mp4" download>MP4</a><a href="google-ads/export/gif/b-five-step-process_300x250.gif" download>GIF</a><a href="google-ads/export/png/b-five-step-process_300x250.png" download>PNG</a></span></figcaption>
+          </figure>
+          <figure class="g" style="--w:336">
+          <div class="frame" style="--w:336;--h:280">
+            <iframe src="google-ads/b-five-step-process/336x280/index.html" width="336" height="280" loading="lazy" title="B · The 5-step process 336x280"></iframe>
+          </div>
+            <figcaption><b>336x280</b> Large Rectangle<span class="dl"><span class="dl-label">Download Ads</span><a href="google-ads/export/zip/ets_b-five-step-process_336x280.zip" download>ZIP</a><a href="google-ads/export/mp4/b-five-step-process_336x280.mp4" download>MP4</a><a href="google-ads/export/gif/b-five-step-process_336x280.gif" download>GIF</a><a href="google-ads/export/png/b-five-step-process_336x280.png" download>PNG</a></span></figcaption>
+          </figure>
+          <figure class="g" style="--w:728">
+          <div class="frame" style="--w:728;--h:90">
+            <iframe src="google-ads/b-five-step-process/728x90/index.html" width="728" height="90" loading="lazy" title="B · The 5-step process 728x90"></iframe>
+          </div>
+            <figcaption><b>728x90</b> Leaderboard<span class="dl"><span class="dl-label">Download Ads</span><a href="google-ads/export/zip/ets_b-five-step-process_728x90.zip" download>ZIP</a><a href="google-ads/export/mp4/b-five-step-process_728x90.mp4" download>MP4</a><a href="google-ads/export/gif/b-five-step-process_728x90.gif" download>GIF</a><a href="google-ads/export/png/b-five-step-process_728x90.png" download>PNG</a></span></figcaption>
+          </figure>
+          <figure class="g" style="--w:970">
+          <div class="frame" style="--w:970;--h:250">
+            <iframe src="google-ads/b-five-step-process/970x250/index.html" width="970" height="250" loading="lazy" title="B · The 5-step process 970x250"></iframe>
+          </div>
+            <figcaption><b>970x250</b> Billboard<span class="dl"><span class="dl-label">Download Ads</span><a href="google-ads/export/zip/ets_b-five-step-process_970x250.zip" download>ZIP</a><a href="google-ads/export/mp4/b-five-step-process_970x250.mp4" download>MP4</a><a href="google-ads/export/gif/b-five-step-process_970x250.gif" download>GIF</a><a href="google-ads/export/png/b-five-step-process_970x250.png" download>PNG</a></span></figcaption>
+          </figure>
+          <figure class="g" style="--w:320">
+          <div class="frame" style="--w:320;--h:50">
+            <iframe src="google-ads/b-five-step-process/320x50/index.html" width="320" height="50" loading="lazy" title="B · The 5-step process 320x50"></iframe>
+          </div>
+            <figcaption><b>320x50</b> Mobile Banner<span class="dl"><span class="dl-label">Download Ads</span><a href="google-ads/export/zip/ets_b-five-step-process_320x50.zip" download>ZIP</a><a href="google-ads/export/mp4/b-five-step-process_320x50.mp4" download>MP4</a><a href="google-ads/export/gif/b-five-step-process_320x50.gif" download>GIF</a><a href="google-ads/export/png/b-five-step-process_320x50.png" download>PNG</a></span></figcaption>
+          </figure>
+          <figure class="g" style="--w:320">
+          <div class="frame" style="--w:320;--h:100">
+            <iframe src="google-ads/b-five-step-process/320x100/index.html" width="320" height="100" loading="lazy" title="B · The 5-step process 320x100"></iframe>
+          </div>
+            <figcaption><b>320x100</b> Large Mobile Banner<span class="dl"><span class="dl-label">Download Ads</span><a href="google-ads/export/zip/ets_b-five-step-process_320x100.zip" download>ZIP</a><a href="google-ads/export/mp4/b-five-step-process_320x100.mp4" download>MP4</a><a href="google-ads/export/gif/b-five-step-process_320x100.gif" download>GIF</a><a href="google-ads/export/png/b-five-step-process_320x100.png" download>PNG</a></span></figcaption>
+          </figure>
+        </div>
+        <div class="flow tall">
+          <figure class="g" style="--w:300">
+          <div class="frame" style="--w:300;--h:600">
+            <iframe src="google-ads/b-five-step-process/300x600/index.html" width="300" height="600" loading="lazy" title="B · The 5-step process 300x600"></iframe>
+          </div>
+            <figcaption><b>300x600</b> Half-Page<span class="dl"><span class="dl-label">Download Ads</span><a href="google-ads/export/zip/ets_b-five-step-process_300x600.zip" download>ZIP</a><a href="google-ads/export/mp4/b-five-step-process_300x600.mp4" download>MP4</a><a href="google-ads/export/gif/b-five-step-process_300x600.gif" download>GIF</a><a href="google-ads/export/png/b-five-step-process_300x600.png" download>PNG</a></span></figcaption>
+          </figure>
+          <figure class="g" style="--w:160">
+          <div class="frame" style="--w:160;--h:600">
+            <iframe src="google-ads/b-five-step-process/160x600/index.html" width="160" height="600" loading="lazy" title="B · The 5-step process 160x600"></iframe>
+          </div>
+            <figcaption><b>160x600</b> Wide Skyscraper<span class="dl"><span class="dl-label">Download Ads</span><a href="google-ads/export/zip/ets_b-five-step-process_160x600.zip" download>ZIP</a><a href="google-ads/export/mp4/b-five-step-process_160x600.mp4" download>MP4</a><a href="google-ads/export/gif/b-five-step-process_160x600.gif" download>GIF</a><a href="google-ads/export/png/b-five-step-process_160x600.png" download>PNG</a></span></figcaption>
+          </figure>
+        </div>
+      </section>
+      <section class="row">
+        <header><h3>C · Passive talent</h3><span class="tag">Job seekers</span></header>
+        <div class="flow">
+          <figure class="g" style="--w:300">
+          <div class="frame" style="--w:300;--h:250">
+            <iframe src="google-ads/c-passive-talent/300x250/index.html" width="300" height="250" loading="lazy" title="C · Passive talent 300x250"></iframe>
+          </div>
+            <figcaption><b>300x250</b> Medium Rectangle<span class="dl"><span class="dl-label">Download Ads</span><a href="google-ads/export/zip/ets_c-passive-talent_300x250.zip" download>ZIP</a><a href="google-ads/export/mp4/c-passive-talent_300x250.mp4" download>MP4</a><a href="google-ads/export/gif/c-passive-talent_300x250.gif" download>GIF</a><a href="google-ads/export/png/c-passive-talent_300x250.png" download>PNG</a></span></figcaption>
+          </figure>
+          <figure class="g" style="--w:336">
+          <div class="frame" style="--w:336;--h:280">
+            <iframe src="google-ads/c-passive-talent/336x280/index.html" width="336" height="280" loading="lazy" title="C · Passive talent 336x280"></iframe>
+          </div>
+            <figcaption><b>336x280</b> Large Rectangle<span class="dl"><span class="dl-label">Download Ads</span><a href="google-ads/export/zip/ets_c-passive-talent_336x280.zip" download>ZIP</a><a href="google-ads/export/mp4/c-passive-talent_336x280.mp4" download>MP4</a><a href="google-ads/export/gif/c-passive-talent_336x280.gif" download>GIF</a><a href="google-ads/export/png/c-passive-talent_336x280.png" download>PNG</a></span></figcaption>
+          </figure>
+          <figure class="g" style="--w:728">
+          <div class="frame" style="--w:728;--h:90">
+            <iframe src="google-ads/c-passive-talent/728x90/index.html" width="728" height="90" loading="lazy" title="C · Passive talent 728x90"></iframe>
+          </div>
+            <figcaption><b>728x90</b> Leaderboard<span class="dl"><span class="dl-label">Download Ads</span><a href="google-ads/export/zip/ets_c-passive-talent_728x90.zip" download>ZIP</a><a href="google-ads/export/mp4/c-passive-talent_728x90.mp4" download>MP4</a><a href="google-ads/export/gif/c-passive-talent_728x90.gif" download>GIF</a><a href="google-ads/export/png/c-passive-talent_728x90.png" download>PNG</a></span></figcaption>
+          </figure>
+          <figure class="g" style="--w:970">
+          <div class="frame" style="--w:970;--h:250">
+            <iframe src="google-ads/c-passive-talent/970x250/index.html" width="970" height="250" loading="lazy" title="C · Passive talent 970x250"></iframe>
+          </div>
+            <figcaption><b>970x250</b> Billboard<span class="dl"><span class="dl-label">Download Ads</span><a href="google-ads/export/zip/ets_c-passive-talent_970x250.zip" download>ZIP</a><a href="google-ads/export/mp4/c-passive-talent_970x250.mp4" download>MP4</a><a href="google-ads/export/gif/c-passive-talent_970x250.gif" download>GIF</a><a href="google-ads/export/png/c-passive-talent_970x250.png" download>PNG</a></span></figcaption>
+          </figure>
+          <figure class="g" style="--w:320">
+          <div class="frame" style="--w:320;--h:50">
+            <iframe src="google-ads/c-passive-talent/320x50/index.html" width="320" height="50" loading="lazy" title="C · Passive talent 320x50"></iframe>
+          </div>
+            <figcaption><b>320x50</b> Mobile Banner<span class="dl"><span class="dl-label">Download Ads</span><a href="google-ads/export/zip/ets_c-passive-talent_320x50.zip" download>ZIP</a><a href="google-ads/export/mp4/c-passive-talent_320x50.mp4" download>MP4</a><a href="google-ads/export/gif/c-passive-talent_320x50.gif" download>GIF</a><a href="google-ads/export/png/c-passive-talent_320x50.png" download>PNG</a></span></figcaption>
+          </figure>
+          <figure class="g" style="--w:320">
+          <div class="frame" style="--w:320;--h:100">
+            <iframe src="google-ads/c-passive-talent/320x100/index.html" width="320" height="100" loading="lazy" title="C · Passive talent 320x100"></iframe>
+          </div>
+            <figcaption><b>320x100</b> Large Mobile Banner<span class="dl"><span class="dl-label">Download Ads</span><a href="google-ads/export/zip/ets_c-passive-talent_320x100.zip" download>ZIP</a><a href="google-ads/export/mp4/c-passive-talent_320x100.mp4" download>MP4</a><a href="google-ads/export/gif/c-passive-talent_320x100.gif" download>GIF</a><a href="google-ads/export/png/c-passive-talent_320x100.png" download>PNG</a></span></figcaption>
+          </figure>
+        </div>
+        <div class="flow tall">
+          <figure class="g" style="--w:300">
+          <div class="frame" style="--w:300;--h:600">
+            <iframe src="google-ads/c-passive-talent/300x600/index.html" width="300" height="600" loading="lazy" title="C · Passive talent 300x600"></iframe>
+          </div>
+            <figcaption><b>300x600</b> Half-Page<span class="dl"><span class="dl-label">Download Ads</span><a href="google-ads/export/zip/ets_c-passive-talent_300x600.zip" download>ZIP</a><a href="google-ads/export/mp4/c-passive-talent_300x600.mp4" download>MP4</a><a href="google-ads/export/gif/c-passive-talent_300x600.gif" download>GIF</a><a href="google-ads/export/png/c-passive-talent_300x600.png" download>PNG</a></span></figcaption>
+          </figure>
+          <figure class="g" style="--w:160">
+          <div class="frame" style="--w:160;--h:600">
+            <iframe src="google-ads/c-passive-talent/160x600/index.html" width="160" height="600" loading="lazy" title="C · Passive talent 160x600"></iframe>
+          </div>
+            <figcaption><b>160x600</b> Wide Skyscraper<span class="dl"><span class="dl-label">Download Ads</span><a href="google-ads/export/zip/ets_c-passive-talent_160x600.zip" download>ZIP</a><a href="google-ads/export/mp4/c-passive-talent_160x600.mp4" download>MP4</a><a href="google-ads/export/gif/c-passive-talent_160x600.gif" download>GIF</a><a href="google-ads/export/png/c-passive-talent_160x600.png" download>PNG</a></span></figcaption>
+          </figure>
+        </div>
+      </section>
+    </section>
+  </main>
+  <script>
+    // Scale each fixed-size ad iframe to its frame width (never above 100%).
+    const ro = new ResizeObserver(entries => entries.forEach(e => {
+      const f = e.target.querySelector('iframe');
+      f.style.transform = 'scale(' + Math.min(1, e.contentRect.width / f.width) + ')';
+    }));
+    document.querySelectorAll('.frame').forEach(el => ro.observe(el));
+
+    // Platform toggle: show one section, restart its ads, remember it in the URL (#meta / #google).
+    const tabs = [...document.querySelectorAll('.toggle [role="tab"]')];
+    function show(id, replay) {
+      tabs.forEach(t => {
+        const on = t.getAttribute('aria-controls') === id;
+        t.setAttribute('aria-selected', on);
+        document.getElementById(t.getAttribute('aria-controls')).hidden = !on;
+      });
+      if (replay) document.querySelectorAll('#' + id + ' iframe').forEach(f => f.src = f.src);
+      history.replaceState(null, '', '#' + id);
+      window.scrollTo(0, 0);
+    }
+    tabs.forEach(t => t.addEventListener('click', () => show(t.getAttribute('aria-controls'), true)));
+    show(location.hash === '#google' ? 'google' : 'meta', false);
+  </script>
+</body>
+</html>

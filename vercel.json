@@ -1,0 +1,13 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": null,
+  "installCommand": "echo 'static site: no install needed'",
+  "buildCommand": "echo 'static site: ads are prebuilt locally with npm run export'",
+  "outputDirectory": ".",
+  "redirects": [
+    { "source": "/preview.html", "destination": "/", "permanent": true }
+  ],
+  "headers": [
+    { "source": "/(meta-ads|google-ads)/export/(.*)", "headers": [{ "key": "Content-Disposition", "value": "attachment" }] }
+  ]
+}

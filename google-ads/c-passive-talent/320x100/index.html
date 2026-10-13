@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="ad.size" content="width=320,height=100">
+  <title>Energy Talent Search · C · Passive talent · 320x100</title>
+  <link rel="stylesheet" href="style.css">
+  <style>html,body{width:320px;height:100px}</style>
+  <script>var clickTag = "https://energytalentsearch.com/job-seekers/?utm_source=google&utm_medium=display&utm_campaign=ets_passive_talent";</script>
+</head>
+<body>
+  <a class="ad wait c-c z-320x100 o-h" id="ad" href="javascript:window.open(window.clickTag)"
+     style="--w:320px;--h:100px" aria-label="Start Your Job Search — Energy Talent Search">
+    <img class="bg" src="assets/photo.jpg" alt="">
+    <div class="scrim"></div>
+    <div class="safe">
+      <span class="logo"><img src="assets/logo.jpg" alt="Energy Talent Search"></span>
+      <div class="copy">
+        <h1 class="headline"><span class="ln" style="--i:0"><span class="t">The best energy jobs</span></span><span class="ln" style="--i:1"><span class="t"><span class="mark" style="--md:1.30s">never hit the job boards.</span></span></span></h1>
+        <p class="sub">Confidential. We call you first. 20+ years in energy recruiting.</p>
+      </div>
+      <span class="cta"><span class="full">Start Your Job Search</span><span class="short">Start Your Search</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+    </div>
+  </a>
+  <script>
+  (function () {
+    var END = 9000;
+    var ad = document.getElementById('ad');
+    var capture = /[?&]capture\b/.test(location.search);
+    function anims() { return document.getAnimations ? document.getAnimations() : []; }
+    window.__ad = { END: END, seek: function (ms) { anims().forEach(function (a) { a.pause(); a.currentTime = ms; }); } };
+    window.__adReady = Promise.all([
+      document.fonts ? document.fonts.ready : Promise.resolve(),
+      new Promise(function (r) { if (document.readyState === 'complete') r(); else addEventListener('load', r); })
+    ]);
+    if (capture) return;
+    window.__adReady.then(function () {
+      ad.classList.remove('wait');
+      if (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) { window.__ad.seek(END); return; }
+      // 2 plays total (≈21s, within Google's 30s animation limit), then rest on the end frame.
+      setTimeout(function () { anims().forEach(function (a) { a.currentTime = 0; a.play(); }); }, END + 2500);
+    });
+  })();
+  </script>
+</body>
+</html>

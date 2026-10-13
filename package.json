@@ -1,0 +1,16 @@
+{
+  "name": "energy-talent-search-meta-ads",
+  "private": true,
+  "type": "module",
+  "description": "Energy Talent Search ads: Meta (3 concepts x 3 sizes, PNG+MP4) and Google Display HTML5 (3 concepts x 8 sizes, ZIP).",
+  "scripts": {
+    "build": "node src/build.mjs && node src/build-google.mjs && node src/preview.mjs",
+    "png": "node scripts/capture-png.mjs",
+    "mp4": "node scripts/record-mp4.mjs",
+    "export": "npm run build && npm run png && npm run mp4 && npm run gif",
+    "gif": "node scripts/record-gif.mjs"
+  },
+  "devDependencies": {
+    "puppeteer-core": "^23.11.1"
+  }
+}
