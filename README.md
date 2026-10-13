@@ -1,44 +1,93 @@
-# Energy Talent Search: Meta + Google ads
+# Energy Talent Search: HTML5 ads for Meta and Google
 
-Open **`index.html`** to see every ad (the preview page, and the home page on Vercel). It has two sections, **Meta Ads** and **Google Ads**, with download links under each ad.
+Animated ad set for **[Energy Talent Search](https://energytalentsearch.com/)**, a Denver energy recruiting firm.
+It has 3 concepts, each built for both platforms:
+
+| Concept | Audience | Headline | CTA |
+|---|---|---|---|
+| **A** · Hard-to-fill roles | Employers | Hard-to-fill energy roles? We know who to call. | Start a Search |
+| **B** · The 5-step process | Employers | First call to first day in 5 clear steps. | See How We Hire |
+| **C** · Passive talent | Job seekers | The best energy jobs never hit the job boards. | Start Your Job Search |
+
+| Platform | Ads | Sizes | Files to upload |
+|---|---|---|---|
+| **Meta** (Facebook + Instagram) | 9 | 1080×1080 · 1440×1800 · 1080×1920 | MP4 (video ads) or PNG (image ads) |
+| **Google Ads** (Display Network) | 24 | 300×250 · 336×280 · 728×90 · 970×250 · 160×600 · 300×600 · 320×50 · 320×100 | ZIP (HTML5), or GIF/PNG (image ads) |
+
+Logo, photos, colors and fonts all come from the client's website.
+The only figure used anywhere is "20+ years"; there are no invented stats or testimonials.
+
+## View the ads
+
+`index.html` is the preview page. It's also the site's home page when deployed to Vercel.
+
+- A **Meta Ads / Google Ads** toggle at the top shows one platform at a time. Add `#google` to the URL to open on Google Ads.
+- Every ad plays live, and **Replay all** restarts them.
+- Each ad has **Download Ads** buttons: **MP4 · PNG** for Meta, and **ZIP · MP4 · GIF · PNG** for Google.
+- To play a downloaded GIF on a Mac, select it in Finder and press **Space** (Quick Look).
+
+To view locally, serve the folder rather than opening the file directly, so the fonts load:
+
+```bash
+python3 -m http.server 8080      # then open http://localhost:8080
+```
+
+## What's in the repo
 
 ```
-meta-ads/                     Facebook + Instagram: 3 concepts × 3 sizes (1080x1080, 1440x1800, 1080x1920)
+index.html                    preview page / Vercel home page (generated)
+meta-ads/                     Meta: 3 concepts × 3 sizes
   <concept>/<size>/           index.html · style.css · assets/
-  export/mp4/                 ← UPLOAD THESE to Meta (video ads): H.264 · 30fps · 10s
+  export/mp4/                 ← upload to Meta as video ads (H.264 · 30fps · 10s)
   export/png/                 static end frames (image ads)
   ad-copy.md                  primary text / headline / description / CTA per concept
-google-ads/                   Google Display Network HTML5: 3 concepts × 8 sizes
+google-ads/                   Google Display: 3 concepts × 8 sizes
   <concept>/<size>/           index.html · style.css · assets/ (cropped photo, logo, subset fonts)
-  export/zip/                 ← UPLOAD THESE to Google Ads (one zip per banner, all < 150 KB)
+  export/zip/                 ← upload to Google Ads as HTML5 ads (all < 150 KB)
   export/gif/                 animated GIF image ads (< 150 KB, 4 fps, stop within 30s)
   export/mp4/                 30fps video of each banner
-  export/png/                 static backup images (same sizes)
-src/                          the source: build.mjs (Meta), build-google.mjs (Google), preview.mjs, *.css, assets/
-scripts/                      capture-png.mjs · record-mp4.mjs (both platforms) · record-gif.mjs (Google)
+  export/png/                 static backup images
+src/                          source: build.mjs (Meta), build-google.mjs (Google), preview.mjs, style.css, google.css, assets/
+scripts/                      export tools: capture-png.mjs · record-mp4.mjs · record-gif.mjs
+vercel.json                   static hosting config (no build step on Vercel)
 ```
 
-Concepts: **A** Hard-to-fill roles (employers), **B** The 5-step process (employers), **C** Passive talent (job seekers).
+## Editing and rebuilding
 
-## Commands
+Everything in `meta-ads/`, `google-ads/` and `index.html` is generated from `src/`. Don't edit those by hand; the next build overwrites them.
+
+| To change | Edit |
+|---|---|
+| Meta copy, line breaks, landing URLs | `src/build.mjs` |
+| Google copy, sizes, landing URLs, photo focal points | `src/build-google.mjs` |
+| Styles and animation | `src/style.css` (Meta) · `src/google.css` (Google) |
+| Preview page | `src/preview.mjs` |
+| Photos and logo | `src/assets/` (see [Image slots](#image-slots)) |
 
 ```bash
 npm install          # puppeteer-core only; uses your installed Chrome (or set CHROME_PATH)
-npm run build        # regenerate meta-ads/, google-ads/ (+ zips) and index.html from src/
-npm run png          # end-frame PNGs for both platforms
-npm run mp4          # MP4s for both platforms (needs ffmpeg)
-npm run gif          # Google animated GIFs, each checked against the 150 KB limit
+npm run export       # build + PNG + MP4 + GIF for everything (needs ffmpeg; takes several minutes)
+
+npm run build        # regenerate ad folders, Google ZIPs and index.html only
+npm run png          # end-frame PNGs (both platforms)
+npm run mp4          # MP4s (both platforms)
+npm run gif          # Google GIFs, each checked against the 150 KB limit
 npm run png -- google 300x250        # filter: every term must match "<platform folder>/<concept>_<size>"
 ```
 
-To change copy, line breaks or URLs, edit `src/build.mjs` (Meta) or `src/build-google.mjs` (Google). Styles are in `src/style.css` and `src/google.css`. Don't edit the generated ad folders by hand; the next build overwrites them.
-Rendering is deterministic: the export scripts pause every CSS animation and seek it frame by frame.
+Exports are frame-accurate: the scripts pause every CSS animation and seek it frame by frame in headless Chrome, then encode with ffmpeg.
 
-## Deploying (GitHub + Vercel)
-The site is static and every file is committed, including the exports, so Vercel serves the repo as-is.
-`vercel.json` turns off Vercel's install and build steps, because they would need ffmpeg and Chrome.
-After changing ads, run the full rebuild locally (`npm run export`) and commit. Vercel redeploys on push.
-`/preview.html` redirects to `/`.
+## Deploy to Vercel
+
+The site is static and every file, including the exports, is committed, so Vercel serves the repo as-is.
+
+1. Go to [vercel.com/new](https://vercel.com/new) and import `vikask-iitg/HTML5-Ads-Sample`.
+2. Leave **Framework Preset** on *Other* and keep the default build settings. `vercel.json` already skips the install and build steps, because they need ffmpeg and Chrome.
+3. Click **Deploy**. The preview page goes live at the project URL, and `/preview.html` redirects there.
+
+After that, every push to `main` redeploys automatically. When you change the ads, run `npm run export` locally, commit the regenerated files and push.
+
+> This repo is **public**, so the client's logo and creative are visible to anyone. To restrict access, make the repo private (Vercel still deploys it) and/or turn on Vercel's Deployment Protection.
 
 ## Meta upload
 Ads Manager doesn't accept HTML5, so upload the **MP4s** as video ads (or the PNGs as image ads).
