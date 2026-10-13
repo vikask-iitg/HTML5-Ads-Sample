@@ -15,12 +15,20 @@ const frame = (src, w, h, title) => `
 
 const dl = (links) => `<span class="dl"><span class="dl-label">Download Ads</span>${links.map(([t, href]) => `<a href="${href}" download>${t}</a>`).join('')}</span>`;
 
+// Same four formats, same order, on both platforms.
+const downloads = (group, id, key) => [
+  ['ZIP', `${group}/export/zip/ets_${id}_${key}.zip`],
+  ['PNG', `${group}/export/png/${id}_${key}.png`],
+  ['MP4', `${group}/export/mp4/${id}_${key}.mp4`],
+  ['GIF', `${group}/export/gif/${id}_${key}.gif`],
+];
+
 const metaRows = CONCEPTS.map(c => `
       <section class="row">
         <header><h3>${c.name}</h3><span class="tag">${c.audience}</span></header>
         <div class="grid">${Object.entries(SIZES).map(([key, s]) => `
           <figure>${frame(`meta-ads/${c.id}/${key}/index.html`, s.w, s.h, `${c.name} ${key}`)}
-            <figcaption><b>${key}</b> ${s.label}${dl([['MP4', `meta-ads/export/mp4/${c.id}_${key}.mp4`], ['PNG', `meta-ads/export/png/${c.id}_${key}.png`]])}</figcaption>
+            <figcaption><b>${key}</b> ${s.label}${dl(downloads('meta-ads', c.id, key))}</figcaption>
           </figure>`).join('')}
         </div>
       </section>`).join('');
@@ -29,8 +37,8 @@ const metaRows = CONCEPTS.map(c => `
 const ORDER = ['300x250', '336x280', '728x90', '970x250', '320x50', '320x100', '300x600', '160x600'];
 const isTall = (s) => s.h > s.w * 1.5;
 const gFigure = (c, key, s) => `
-          <figure class="g" style="--w:${s.w}">${frame(`google-ads/${c.id}/${key}/index.html`, s.w, s.h, `${c.name} ${key}`)}
-            <figcaption><b>${key}</b> ${s.label}${dl([['ZIP', `google-ads/export/zip/ets_${c.id}_${key}.zip`], ['MP4', `google-ads/export/mp4/${c.id}_${key}.mp4`], ['GIF', `google-ads/export/gif/${c.id}_${key}.gif`], ['PNG', `google-ads/export/png/${c.id}_${key}.png`]])}</figcaption>
+          <figure class="g" style="--w:${s.w}">${frame(`google-ads/${c.id}/${key}/index.html?loop`, s.w, s.h, `${c.name} ${key}`)}
+            <figcaption><b>${key}</b> ${s.label}${dl(downloads('google-ads', c.id, key))}</figcaption>
           </figure>`;
 const gSizes = ORDER.filter(k => GSIZES[k]).map(k => [k, GSIZES[k]]);
 
@@ -111,12 +119,12 @@ const html = `<!doctype html>
   <main>
     <section class="platform" id="meta" role="tabpanel" aria-labelledby="tab-meta">
       <h2><span class="badge">META ADS</span> Facebook &amp; Instagram</h2>
-      <p>3 concepts × 3 sizes, scaled to fit. Upload the MP4s from <code>meta-ads/export/mp4/</code> as video ads (Meta doesn't accept HTML5). Copy for Ads Manager is in <code>meta-ads/ad-copy.md</code>.</p>
+      <p>3 concepts × 3 sizes, scaled to fit. Upload the <b>MP4</b> as a video ad (Meta doesn't accept HTML5) or the <b>PNG</b> as an image ad. <b>ZIP</b> is the HTML5 source of each ad. <b>GIF</b> is a full-size animated version (10 fps). Copy for Ads Manager is in <code>meta-ads/ad-copy.md</code>.</p>
       <p class="note" role="note"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9v4M12 17h.01"/></svg><b>Note</b><span>To play an animated GIF on a Mac, select the GIF file in Finder and press the <kbd>Space</kbd> bar to use Quick Look.</span></p>${metaRows}
     </section>
     <section class="platform" id="google" role="tabpanel" aria-labelledby="tab-google" hidden>
       <h2><span class="badge">GOOGLE ADS</span> Display Network · HTML5</h2>
-      <p>3 concepts × 8 sizes, shown at actual size. Upload the <b>ZIP</b> as an HTML5 ad (under 150 KB, clickTag-ready, 2 plays ≈ 21s). <b>GIF</b> is the animated image-ad version (under 150 KB, 4 fps, stops within 30s) for accounts without HTML5 access. <b>MP4</b> is a 30fps video of each banner. <b>PNG</b> is the static backup image.</p>
+      <p>3 concepts × 8 sizes, shown at actual size. Upload the <b>ZIP</b> as an HTML5 ad (under 150 KB, clickTag-ready; plays twice ≈ 21s to meet Google's 30s limit, though this preview loops them continuously). <b>GIF</b> is the animated image-ad version (under 150 KB, 4 fps, stops within 30s) for accounts without HTML5 access. <b>MP4</b> is a 30fps video of each banner. <b>PNG</b> is the static backup image.</p>
       <p class="note" role="note"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9v4M12 17h.01"/></svg><b>Note</b><span>To play an animated GIF on a Mac, select the GIF file in Finder and press the <kbd>Space</kbd> bar to use Quick Look.</span></p>${googleRows}
     </section>
   </main>

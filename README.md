@@ -22,8 +22,8 @@ The only figure used anywhere is "20+ years"; there are no invented stats or tes
 `index.html` is the preview page. It's also the site's home page when deployed to Vercel.
 
 - A **Meta Ads / Google Ads** toggle at the top shows one platform at a time. Add `#google` to the URL to open on Google Ads.
-- Every ad plays live, and **Replay all** restarts them.
-- Each ad has **Download Ads** buttons: **MP4 · PNG** for Meta, and **ZIP · MP4 · GIF · PNG** for Google.
+- Every ad plays live and loops continuously (each cycle is 9s of animation plus a 2.5s hold on the end frame). **Replay all** restarts them in sync.
+- Each ad has **Download Ads** buttons in the same order on both platforms: **ZIP · PNG · MP4 · GIF**.
 - To play a downloaded GIF on a Mac, select it in Finder and press **Space** (Quick Look).
 
 To view locally, serve the folder rather than opening the file directly, so the fonts load:
@@ -38,15 +38,17 @@ python3 -m http.server 8080      # then open http://localhost:8080
 index.html                    preview page / Vercel home page (generated)
 meta-ads/                     Meta: 3 concepts × 3 sizes
   <concept>/<size>/           index.html · style.css · assets/
-  export/mp4/                 ← upload to Meta as video ads (H.264 · 30fps · 10s)
+  export/zip/                 HTML5 source of each ad, zipped
   export/png/                 static end frames (image ads)
+  export/mp4/                 ← upload to Meta as video ads (H.264 · 30fps · 10s)
+  export/gif/                 full-size animated GIFs (10 fps, loop forever)
   ad-copy.md                  primary text / headline / description / CTA per concept
 google-ads/                   Google Display: 3 concepts × 8 sizes
   <concept>/<size>/           index.html · style.css · assets/ (cropped photo, logo, subset fonts)
   export/zip/                 ← upload to Google Ads as HTML5 ads (all < 150 KB)
-  export/gif/                 animated GIF image ads (< 150 KB, 4 fps, stop within 30s)
-  export/mp4/                 30fps video of each banner
   export/png/                 static backup images
+  export/mp4/                 30fps video of each banner
+  export/gif/                 animated GIF image ads (< 150 KB, 4 fps, stop within 30s)
 src/                          source: build.mjs (Meta), build-google.mjs (Google), preview.mjs, style.css, google.css, assets/
 scripts/                      export tools: capture-png.mjs · record-mp4.mjs · record-gif.mjs
 vercel.json                   static hosting config (no build step on Vercel)
@@ -68,10 +70,10 @@ Everything in `meta-ads/`, `google-ads/` and `index.html` is generated from `src
 npm install          # puppeteer-core only; uses your installed Chrome (or set CHROME_PATH)
 npm run export       # build + PNG + MP4 + GIF for everything (needs ffmpeg; takes several minutes)
 
-npm run build        # regenerate ad folders, Google ZIPs and index.html only
+npm run build        # regenerate ad folders, ZIPs (both platforms) and index.html only
 npm run png          # end-frame PNGs (both platforms)
 npm run mp4          # MP4s (both platforms)
-npm run gif          # Google GIFs, each checked against the 150 KB limit
+npm run gif          # GIFs (both platforms); Google ones are checked against the 150 KB limit
 npm run png -- google 300x250        # filter: every term must match "<platform folder>/<concept>_<size>"
 ```
 
@@ -90,7 +92,10 @@ After that, every push to `main` redeploys automatically. When you change the ad
 > This repo is **public**, so the client's logo and creative are visible to anyone. To restrict access, make the repo private (Vercel still deploys it) and/or turn on Vercel's Deployment Protection.
 
 ## Meta upload
+The Meta HTML5 ads loop forever (Meta never runs them, so no animation limit applies).
 Ads Manager doesn't accept HTML5, so upload the **MP4s** as video ads (or the PNGs as image ads).
+Meta also accepts the GIFs, but it converts them to video, so the MP4 is the better upload.
+In both GIF sets the photo is held still, because the zoom would make the files several times larger; everything else animates.
 Use placement asset customization: 1:1 for Feed/Marketplace/Right Column, 4:5 for Feed, 9:16 for Stories/Reels.
 
 ## Google Ads upload
@@ -98,7 +103,7 @@ In a new **Display campaign** ad, choose **Upload display ads** and add the ZIPs
 Each banner:
 - has an `ad.size` meta tag
 - routes its click through `clickTag` (the landing URL with UTM parameters, set in `src/build-google.mjs`)
-- plays twice (≈21s, under Google's 30s limit) and stays on the end frame
+- plays twice (≈21s, under Google's 30s limit) and stays on the end frame. The preview page adds `?loop` to the banner URL to loop it forever; the uploaded ZIP never sees that parameter
 - has no external requests: fonts are subset to Latin, and photos are pre-cropped for each size at 2× for retina screens
 
 Google only allows HTML5 uploads from accounts with a good policy history and enough past spend.

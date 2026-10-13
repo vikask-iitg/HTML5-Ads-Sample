@@ -1,6 +1,8 @@
-// Meta (Facebook + Instagram) ads: generates the 9 self-contained ad folders in meta-ads/.
+// Meta (Facebook + Instagram) ads: generates the 9 self-contained ad folders in meta-ads/,
+// plus a ZIP of each folder in meta-ads/export/zip/ (the HTML5 source, for hand-off or other platforms).
 // Usage: npm run build
 import { mkdirSync, copyFileSync, writeFileSync, readFileSync, rmSync } from 'node:fs';
+import { execFileSync } from 'node:child_process';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -148,10 +150,13 @@ function adHtml(c, sizeKey) {
     ready.then(function () {
       if (reduce) { ad.classList.remove('wait'); window.__ad.seek(END); return; }
       ad.classList.remove('wait');
-      // Loop 2 of 2: hold the end frame, then play once more and rest on the end frame.
-      setTimeout(function () {
-        anims().forEach(function (a) { a.currentTime = 0; a.play(); });
-      }, END + 2500);
+      // Loop forever: hold the end frame for 2.5s, then replay from the start.
+      (function again() {
+        setTimeout(function () {
+          anims().forEach(function (a) { a.currentTime = 0; a.play(); });
+          again();
+        }, END + 2500);
+      })();
     });
   })();
   </script>
@@ -162,6 +167,9 @@ function adHtml(c, sizeKey) {
 
 function build() {
   const css = readFileSync(join(SRC, 'style.css'), 'utf8');
+  const zipDir = join(OUT, 'export', 'zip');
+  rmSync(zipDir, { recursive: true, force: true });
+  mkdirSync(zipDir, { recursive: true });
   for (const c of CONCEPTS) {
     for (const key of Object.keys(SIZES)) {
       const dir = join(OUT, c.id, key);
@@ -172,6 +180,7 @@ function build() {
       for (const f of ['logo.png', c.image, 'fonts/space-grotesk.woff2', 'fonts/plus-jakarta-sans.woff2']) {
         copyFileSync(join(SRC, 'assets', f), join(dir, 'assets', f));
       }
+      execFileSync('zip', ['-q', '-r', '-9', '-X', join(zipDir, `ets_${c.id}_${key}.zip`), '.', '-x', '.*'], { cwd: dir });
     }
   }
   console.log(`Meta: built ${CONCEPTS.length * Object.keys(SIZES).length} ads → meta-ads/`);

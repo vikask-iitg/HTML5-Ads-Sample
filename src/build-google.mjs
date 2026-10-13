@@ -116,8 +116,17 @@ function bannerHtml(c, key) {
     window.__adReady.then(function () {
       ad.classList.remove('wait');
       if (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) { window.__ad.seek(END); return; }
-      // 2 plays total (≈21s, within Google's 30s animation limit), then rest on the end frame.
-      setTimeout(function () { anims().forEach(function (a) { a.currentTime = 0; a.play(); }); }, END + 2500);
+      // Google caps HTML5 animation at 30s, so uploaded banners play twice (≈21s) and rest on the end frame.
+      // Adding ?loop to the URL (used by the preview page only) makes it loop forever instead.
+      var forever = /[?&]loop\\b/.test(location.search), plays = 1;
+      (function again() {
+        if (!forever && plays >= 2) return;
+        setTimeout(function () {
+          plays++;
+          anims().forEach(function (a) { a.currentTime = 0; a.play(); });
+          again();
+        }, END + 2500);
+      })();
     });
   })();
   </script>

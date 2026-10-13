@@ -59,10 +59,13 @@
     ready.then(function () {
       if (reduce) { ad.classList.remove('wait'); window.__ad.seek(END); return; }
       ad.classList.remove('wait');
-      // Loop 2 of 2: hold the end frame, then play once more and rest on the end frame.
-      setTimeout(function () {
-        anims().forEach(function (a) { a.currentTime = 0; a.play(); });
-      }, END + 2500);
+      // Loop forever: hold the end frame for 2.5s, then replay from the start.
+      (function again() {
+        setTimeout(function () {
+          anims().forEach(function (a) { a.currentTime = 0; a.play(); });
+          again();
+        }, END + 2500);
+      })();
     });
   })();
   </script>
